@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
-import TutorialDataService from "../services/TutorialService";
+import RecipeDataService from "../services/RecipeService";
 import { Link } from "react-router-dom";
 
-const TutorialsList = () => {
-    const [tutorials, setTutorials] = useState([]);
-    const [currentTutorial, setCurrentTutorial] = useState(null);
+const RecipesList = () => {
+    const [recipes, setRecipes] = useState([]);
+    const [currentRecipe, setCurrentRecipe] = useState(null);
     const [currentIndex, setCurrentIndex] = useState(-1);
     const [searchTitle, setSearchTitle] = useState("");
 
     useEffect(() => {
-        retrieveTutorials();
+        retrieveRecipes();
     }, []);
 
     const onChangeSearchTitle = event => {
@@ -17,28 +17,28 @@ const TutorialsList = () => {
         setSearchTitle(searchTitle);
     };
 
-    const retrieveTutorials = () => {
-        TutorialDataService.getAll()
+    const retrieveRecipes = () => {
+        RecipeDataService.getAll()
             .then(response => {
-                setTutorials(response.data);
-                console.log(response.data);
-            })
+                console.log('retrieveRecipes :> ' + response.data);
+                setRecipes(response.data);
+            });
     };
 
 
     const refreshList = () => {
-        retrieveTutorials();
-        setCurrentTutorial(null);
+        retrieveRecipes();
+        setCurrentRecipe(null);
         setCurrentIndex(-1);
     };
 
-    const setActiveTutorial = (tutorial, index) => {
-        setCurrentTutorial(tutorial);
+    const setActiveRecipe = (recipe, index) => {
+        setCurrentRecipe(recipe);
         setCurrentIndex(index);
     };
 
-    const removeAllTutorials = () => {
-        TutorialDataService.removeAll()
+    const removeAllRecipes = () => {
+        RecipeDataService.removeAll()
             .then(response => {
                 console.log(response.data);
                 refreshList();
@@ -48,10 +48,10 @@ const TutorialsList = () => {
             });
     };
 
-    const findByTitle = () => {
-        TutorialDataService.findByTitle(searchTitle)
+    const findByRecipe = () => {
+        RecipeDataService.findByRecipe(searchTitle)
             .then(response => {
-                setTutorials(response.data);
+                setRecipes(response.data);
                 console.log(response.data);
             })
             .catch(e => {
@@ -74,7 +74,7 @@ const TutorialsList = () => {
                         <button
                             className="btn btn-outline-secondary"
                             type="button"
-                            onClick={findByTitle}
+                            onClick={findByRecipe}
                         >
                             Search
                         </button>
@@ -82,55 +82,61 @@ const TutorialsList = () => {
                 </div>
             </div>
             <div className="col-md-6">
-                <h4>Tutorials List</h4>
+                <h4>Recipes List</h4>
 
                 <ul className="list-group">
-                    {tutorials &&
-                    tutorials.map((tutorial, index) => (
+                    {recipes &&
+                    recipes.map((recipe, index) => (
                         <li
                             className={
                                 "list-group-item " + (index === currentIndex ? "active" : "")
                             }
-                            onClick={() => setActiveTutorial(tutorial, index)}
+                            onClick={() => setActiveRecipe(recipe, index)}
                             key={index}
                         >
-                            {tutorial.title}
+                            {recipe.name}
                         </li>
                     ))}
                 </ul>
 
                 <button
                     className="m-3 btn btn-sm btn-danger"
-                    onClick={removeAllTutorials}
+                    onClick={removeAllRecipes}
                 >
                     Remove All
                 </button>
             </div>
             <div className="col-md-6">
-                {currentTutorial ? (
+                {currentRecipe ? (
                     <div>
-                        <h4>Tutorial</h4>
+                        <h4>Recipe</h4>
                         <div>
                             <label>
                                 <strong>Title:</strong>
                             </label>{" "}
-                            {currentTutorial.title}
+                            {currentRecipe.title}
                         </div>
                         <div>
                             <label>
                                 <strong>Description:</strong>
                             </label>{" "}
-                            {currentTutorial.description}
+                            {currentRecipe.description}
+                        </div>
+                        <div>
+                            <label>
+                                <strong>Ingredients:</strong>
+                            </label>{" "}
+                            {currentRecipe.ingredients[0].name}
                         </div>
                         <div>
                             <label>
                                 <strong>Status:</strong>
                             </label>{" "}
-                            {currentTutorial.published ? "Published" : "Pending"}
+                            {currentRecipe.published ? "Published" : "Pending"}
                         </div>
 
                         <Link
-                            to={"/tutorials/" + currentTutorial.id}
+                            to={"/recipes/" + currentRecipe.id}
                             className="badge badge-warning"
                         >
                             Edit
@@ -139,7 +145,7 @@ const TutorialsList = () => {
                 ) : (
                     <div>
                         <br />
-                        <p>Please click on a Tutorial...</p>
+                        <p>Please click on a Recipe...</p>
                     </div>
                 )}
             </div>
@@ -147,4 +153,4 @@ const TutorialsList = () => {
     );
 }
 
-export default TutorialsList;
+export default RecipesList;

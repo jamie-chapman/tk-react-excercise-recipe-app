@@ -1,35 +1,42 @@
 import React, { useState } from "react";
-import TutorialDataService from "../services/TutorialService";
+import RecipeDataService from "../services/RecipeService";
 
-const AddTutorial = () => {
-    const initialTutorialState = {
+const AddRecipe = () => {
+    const initialRecipeState = {
         id: null,
-        title: "",
+        name: "",
         description: "",
+        ingredients: [],
         published: false
     };
 
-    const [tutorial, setTutorial] = useState(initialTutorialState);
+    const [recipe, setRecipe] = useState(initialRecipeState);
     const [submitted, setSubmitted] = useState(false);
 
     const handleInputChange = event => {
         const { name, value } = event.target;
 
-        setTutorial({ ...tutorial, [name]: value});
+        setRecipe({ ...recipe, [name]: value});
     };
 
-    const saveTutorial = () => {
+    const saveRecipe = () => {
         var data = {
-            title: tutorial.title,
-            description: tutorial.description
+            name: recipe.name,
+            description: recipe.description,
+            ingredients: [
+                    {
+                        name: recipe.ingredients
+                    }
+                ],
         };
 
-        TutorialDataService.create(data)
+        RecipeDataService.create(data)
             .then(response => {
-                setTutorial({
+                setRecipe({
                     id: response.data.id,
-                    title: response.data.title,
+                    name: response.data.name,
                     description: response.data.description,
+                    ingredients: response.data.ingredients,
                     published: response.data.published
                 });
                 setSubmitted(true);
@@ -39,8 +46,8 @@ const AddTutorial = () => {
         });
     };
 
-    const newTutorial = () => {
-        setTutorial(initialTutorialState);
+    const newRecipe = () => {
+        setRecipe(initialRecipeState);
         setSubmitted(false);
     };
 
@@ -49,22 +56,22 @@ const AddTutorial = () => {
             {submitted ? (
                 <div>
                     <h4>You submitted successfully!</h4>
-                    <button className="btn btn-success" onClick={newTutorial}>
+                    <button className="btn btn-success" onClick={newRecipe}>
                         Add
                     </button>
                 </div>
             ) : (
                 <div>
                     <div className="form-group">
-                        <label htmlFor="title">Title</label>
+                        <label htmlFor="name">Name</label>
                         <input
                             type="text"
                             className="form-control"
-                            id="title"
+                            id="name"
                             required
-                            value={tutorial.title}
+                            value={recipe.name}
                             onChange={handleInputChange}
-                            name="title"
+                            name="name"
                         />
                     </div>
 
@@ -75,13 +82,26 @@ const AddTutorial = () => {
                             className="form-control"
                             id="description"
                             required
-                            value={tutorial.description}
+                            value={recipe.description}
                             onChange={handleInputChange}
                             name="description"
                         />
                     </div>
 
-                    <button onClick={saveTutorial} className="btn btn-success">
+                    <div className="form-group">
+                        <label htmlFor="ingredients">Ingredients</label>
+                        <input
+                            type="text"
+                            className="form-control"
+                            id="ingredients"
+                            required
+                            value={recipe.ingredients}
+                            onChange={handleInputChange}
+                            name="ingredients"
+                        />
+                    </div>
+
+                    <button onClick={saveRecipe} className="btn btn-success">
                         Submit
                     </button>
                 </div>
@@ -90,4 +110,4 @@ const AddTutorial = () => {
     );
 }
 
-export default AddTutorial;
+export default AddRecipe;

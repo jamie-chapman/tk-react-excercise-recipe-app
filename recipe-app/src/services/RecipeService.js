@@ -24,8 +24,8 @@ const removeAll = () => {
     return axios.delete('api/recipe/recipes/');
 };
 
-const findByTitle = title => {
-    return axios.get(`api/recipe/recipes/?name=${title}`);
+const findByRecipe = name => {
+    return axios.get(`api/recipe/recipes/?name=${name}`);
 };
 
 export default {
@@ -35,5 +35,5 @@ export default {
     update,
     remove,
     removeAll,
-    findByTitle
+    findByRecipe
 };

@@ -3,21 +3,21 @@ import { Switch, Route, Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
-import AddTutorial from "./components/AddTutorial";
-import Tutorial from "./components/Tutorial";
-import TutorialsList from "./components/TutorialsList";
+import AddRecipe from "./components/AddRecipe";
+import Recipe from "./components/Recipe";
+import RecipesList from "./components/RecipesList";
 
 function App() {
   return (
     <div>
         <nav className="navbar navbar-expand navbar-dark bg-dark">
-          <a href="/tutorials className=navbar-brand">
+          <a href="/recipes className=navbar-brand">
             Jamie Chapman
           </a>
           <div className="navbar-nav mr-auto">
               <li className="nav-item">
-                  <Link to={"/tutorials"} className="nav-link">
-                      Tutorials
+                  <Link to={"/recipes"} className="nav-link">
+                      Recipes
                   </Link>
               </li>
               <li className="nav-item">
@@ -30,8 +30,8 @@ function App() {
 
         <div className="container mt-3">
             <Switch>
-                <Route exact path={["/", "/tutorial"]} component={TutorialsList} />
-                <Route exact path="/add" component={AddTutorial} />
+                <Route exact path={["/", "/recipes"]} component={RecipesList} />
+                <Route exact path="/add" component={AddRecipe} />
             </Switch>
 
         </div>

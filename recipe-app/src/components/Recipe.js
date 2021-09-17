@@ -1,21 +1,22 @@
 import React, { useState, useEffect } from "react";
-import TutorialDataService from "../services/TutorialService";
+import RecipeDataService from "../services/RecipeService";
 
-const Tutorial = props => {
-    const initialTutorialState = {
+const Recipe = props => {
+    const initialRecipeState = {
         id: null,
         title: "",
         description: "",
+        ingredients: [],
         published: false
     };
 
-    const [currentTutorial, setCurrentTutorial] = useState(initialTutorialState);
+    const [currentRecipe, setCurrentRecipe] = useState(initialRecipeState);
     const [message, setMessage] = useState("");
 
-    const getTutorial = id => {
-        TutorialDataService.get(id)
+    const getRecipe = id => {
+        RecipeDataService.get(id)
             .then(response => {
-                setCurrentTutorial(response.data);
+                setCurrentRecipe(response.data);
                 console.log(response.data);
             })
             .catch(e => {
@@ -24,26 +25,26 @@ const Tutorial = props => {
     };
 
     useEffect(() => {
-        getTutorial(props.match.params.id);
+        getRecipe(props.match.params.id);
     }, [props.match.params.id]);
 
     const handleInputChange = event => {
         const { name, value } = event.target;
-        setCurrentTutorial({ ...currentTutorial, [name]: value });
+        setCurrentRecipe({ ...currentRecipe, [name]: value });
     };
 
 
     const updatePublished = status => {
         var data = {
-            id: currentTutorial.id,
-            title: currentTutorial.title,
-            description: currentTutorial.description,
+            id: currentRecipe.id,
+            title: currentRecipe.title,
+            description: currentRecipe.description,
             published: status
         };
 
-        TutorialDataService.update(currentTutorial.id, data)
+        RecipeDataService.update(currentRecipe.id, data)
             .then(response => {
-                setCurrentTutorial({ ...currentTutorial, published: status });
+                setCurrentRecipe({ ...currentRecipe, published: status });
                 console.log(response.data);
             })
             .catch(e => {
@@ -51,22 +52,22 @@ const Tutorial = props => {
             });
     };
 
-    const updateTutorial = () => {
-        TutorialDataService.update(currentTutorial.id, currentTutorial)
+    const updateRecipe = () => {
+        RecipeDataService.update(currentRecipe.id, currentRecipe)
             .then(response => {
                 console.log(response.data);
-                setMessage("The tutorial was updated successfully!");
+                setMessage("The recipe was updated successfully!");
             })
             .catch(e => {
                 console.log(e);
             });
     };
 
-    const deleteTutorial = () => {
-        TutorialDataService.remove(currentTutorial.id)
+    const deleteRecipe = () => {
+        RecipeDataService.remove(currentRecipe.id)
             .then(response => {
                 console.log(response.data);
-                props.history.push("/tutorials");
+                props.history.push("/recipes");
             })
             .catch(e => {
                 console.log(e);
@@ -76,9 +77,9 @@ const Tutorial = props => {
 
     return (
         <div>
-            {currentTutorial ? (
+            {currentRecipe ? (
                 <div className="edit-form">
-                    <h4>Tutorial</h4>
+                    <h4>Recipe</h4>
                     <form>
                         <div className="form-group">
                             <label htmlFor="title">Title</label>
@@ -87,7 +88,7 @@ const Tutorial = props => {
                                 className="form-control"
                                 id="title"
                                 name="title"
-                                value={currentTutorial.title}
+                                value={currentRecipe.title}
                                 onChange={handleInputChange}
                             />
                         </div>
@@ -98,7 +99,7 @@ const Tutorial = props => {
                                 className="form-control"
                                 id="description"
                                 name="description"
-                                value={currentTutorial.description}
+                                value={currentRecipe.description}
                                 onChange={handleInputChange}
                             />
                         </div>
@@ -107,11 +108,11 @@ const Tutorial = props => {
                             <label>
                                 <strong>Status:</strong>
                             </label>
-                            {currentTutorial.published ? "Published" : "Pending"}
+                            {currentRecipe.published ? "Published" : "Pending"}
                         </div>
                     </form>
 
-                    {currentTutorial.published ? (
+                    {currentRecipe.published ? (
                         <button
                             className="badge badge-primary mr-2"
                             onClick={() => updatePublished(false)}
@@ -127,14 +128,14 @@ const Tutorial = props => {
                         </button>
                     )}
 
-                    <button className="badge badge-danger mr-2" onClick={deleteTutorial}>
+                    <button className="badge badge-danger mr-2" onClick={deleteRecipe}>
                         Delete
                     </button>
 
                     <button
                         type="submit"
                         className="badge badge-success"
-                        onClick={updateTutorial}
+                        onClick={updateRecipe}
                     >
                         Update
                     </button>
@@ -143,11 +144,11 @@ const Tutorial = props => {
             ) : (
                 <div>
                     <br />
-                    <p>Please click on a Tutorial...</p>
+                    <p>Please click on a Recipe...</p>
                 </div>
             )}
         </div>
     );
 }
 
-export default Tutorial;
+export default Recipe;

@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import RecipeDataService from "../services/RecipeService";
 
+import Ingredients from "./Ingredients";
+
 const AddRecipe = () => {
     const initialRecipeState = {
         id: null,
         name: "",
         description: "",
         ingredients: [],
+        ingredient: null,
         published: false
     };
 
@@ -14,20 +17,29 @@ const AddRecipe = () => {
     const [submitted, setSubmitted] = useState(false);
 
     const handleInputChange = event => {
-        const { name, value } = event.target;
+        const { name, ingredient, value } = event.target;
 
         setRecipe({ ...recipe, [name]: value});
+    };
+
+    const newRecipe = () => {
+        setRecipe(initialRecipeState);
+        setSubmitted(false);
+    };
+
+    const addIngredient = () => {
+        console.log('Adding new ingredient ' + recipe.ingredient);
+
+        setRecipe({
+            ...recipe, ingredients: [...recipe.ingredients, { name: recipe.ingredient}]
+        });
     };
 
     const saveRecipe = () => {
         var data = {
             name: recipe.name,
             description: recipe.description,
-            ingredients: [
-                    {
-                        name: recipe.ingredients
-                    }
-                ],
+            ingredients: recipe.ingredients,
         };
 
         RecipeDataService.create(data)
@@ -44,11 +56,6 @@ const AddRecipe = () => {
             }).catch(error => {
                 console.error(error);
         });
-    };
-
-    const newRecipe = () => {
-        setRecipe(initialRecipeState);
-        setSubmitted(false);
     };
 
     return (
@@ -89,25 +96,38 @@ const AddRecipe = () => {
                     </div>
 
                     <div className="form-group">
-                        <label htmlFor="ingredients">Ingredients</label>
+                        <label htmlFor="ingredient">Ingredients</label>
                         <input
                             type="text"
                             className="form-control"
-                            id="ingredients"
+                            id="ingredient"
                             required
-                            value={recipe.ingredients}
+                            value={recipe.ingredient}
                             onChange={handleInputChange}
-                            name="ingredients"
+                            name="ingredient"
                         />
+
+                        <button onClick={addIngredient} className="btn btn-success">
+                            Add Ingredient
+                        </button>
+                    </div>
+
+                    <div className="ingredients-section">
+                        <p>Ingredients</p>
+                        <div>
+                            <Ingredients ingredients={recipe.ingredients} />
+                        </div>
+
                     </div>
 
                     <button onClick={saveRecipe} className="btn btn-success">
                         Submit
                     </button>
                 </div>
-            )}
+                )
+            }
         </div>
-    );
-}
+    )
+};
 
 export default AddRecipe;

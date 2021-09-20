@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import RecipeDataService from "../services/RecipeService";
 import { Link } from "react-router-dom";
+import Ingredients from "./Ingredients";
 
 const RecipesList = () => {
     const [recipes, setRecipes] = useState([]);
@@ -20,11 +21,10 @@ const RecipesList = () => {
     const retrieveRecipes = () => {
         RecipeDataService.getAll()
             .then(response => {
-                console.log('retrieveRecipes :> ' + response.data);
+                console.log('retrieveRecipes :> ' + JSON.stringify(response.data));
                 setRecipes(response.data);
             });
     };
-
 
     const refreshList = () => {
         retrieveRecipes();
@@ -37,8 +37,9 @@ const RecipesList = () => {
         setCurrentIndex(index);
     };
 
-    const removeAllRecipes = () => {
-        RecipeDataService.removeAll()
+    const removeRecipe = () => {
+        console.log('Removing recipe ' + currentRecipe.id);
+        RecipeDataService.remove(currentRecipe.id)
             .then(response => {
                 console.log(response.data);
                 refreshList();
@@ -101,9 +102,9 @@ const RecipesList = () => {
 
                 <button
                     className="m-3 btn btn-sm btn-danger"
-                    onClick={removeAllRecipes}
+                    onClick={removeRecipe}
                 >
-                    Remove All
+                    Remove Selected Recipe
                 </button>
             </div>
             <div className="col-md-6">
@@ -126,7 +127,7 @@ const RecipesList = () => {
                             <label>
                                 <strong>Ingredients:</strong>
                             </label>{" "}
-                            {currentRecipe.ingredients[0].name}
+                            <Ingredients ingredients={currentRecipe.ingredients} />
                         </div>
                         <div>
                             <label>
